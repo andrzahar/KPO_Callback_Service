@@ -72,5 +72,5 @@ components:
         timestamp:
           type: string
           format: date-time
-        errorDesription:
+        errorDescription:
           type: string
