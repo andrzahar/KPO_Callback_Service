@@ -46,7 +46,7 @@ components:
       description: "О приложении: автор и язык, на котором написана программа"
       type: object
       required:
-        - autor
+        - author
         - language
       properties:
         autor:
