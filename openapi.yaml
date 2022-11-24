@@ -6,7 +6,7 @@ info:
   
 paths:
 
-  /recieve:
+  /receive:
     
     post:
       summary: "Сообщение принято"
