@@ -70,7 +70,7 @@ components:
         to:
           $ref: "#/components/schemas/Application"
         timestamp:
-          type: integer
-          format: int64
+          type: string
+          format: date-time
         errorDescription:
           type: string
