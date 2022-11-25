@@ -1,32 +1,16 @@
 openapi: 3.0.3
 info:
-  title: "Logger"
+  title: "Callback Service"
   description: "Серверное приложение для отслеживания маршрута сообщения"
-  version: "0.1"
+  version: "0.5"
   
 paths:
 
-  /receive:
+  /callback:
     
     post:
-      summary: "Сообщение принято"
-      description: "Вызвать когда Ваше приложение получает сообщение из другого приложения или пользователь ввёл его"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Event'
-      responses:
-        200:
-          description: Successful operation
-        400:
-          description: Invalid status value
-    
-  /transmit:
-    
-    post:
-      summary: "Сообщение отправлено"
-      description: "Вызвать когда Ваше приложение отправляет сообщение в другое приложение или показывает пользователю"
+      summary: "Сообщение принято / отправлено"
+      description: "Вызвать когда Ваше приложение получает сообщение из другого приложения или пользователь ввёл его. ИЛИ Вызвать когда Ваше приложение отправляет сообщение в другое приложение или показывает пользователю"
       requestBody:
         content:
           application/json:
@@ -41,6 +25,12 @@ paths:
 components:
 
   schemas:
+  
+    Action:
+      type: string
+      enum:
+        - SEND
+        - RECEIVE
       
     Application:
       description: "О приложении: автор и язык, на котором написана программа"
@@ -55,14 +45,17 @@ components:
           type: string
           
     Event:
-      description: "Событие: от кого отправлено / пришло сообщение, через какой метод и кому отправлено / пришло, точное время (Unix timestamp) получения / отправки сообщения, а так же текст ошибки, если таковая произошла"
+      description: "Событие: получено / отправлено; от кого; используемый метод; кому; точное время события; а так же текст ошибки, если таковая произошла"
       type: object
       required:
+        - action
         - from
         - over
         - to
         - timestamp
       properties:
+        action:
+          $ref: "#/components/schemas/Action"
         from:
           $ref: "#/components/schemas/Application"
         over:
