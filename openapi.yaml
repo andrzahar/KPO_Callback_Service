@@ -49,7 +49,7 @@ components:
         - author
         - language
       properties:
-        autor:
+        author:
           type: string
         language:
           type: string
