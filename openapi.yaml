@@ -55,7 +55,7 @@ components:
           type: string
           
     Event:
-      description: "Событие: от кого отправлено / пришло сообщение, через какой метод и кому отправлено / пришло, точное время получения / отправки сообщения, а так же текст ошибки, если таковая произошла"
+      description: "Событие: от кого отправлено / пришло сообщение, через какой метод и кому отправлено / пришло, точное время (Unix timestamp) получения / отправки сообщения, а так же текст ошибки, если таковая произошла"
       type: object
       required:
         - from
@@ -70,7 +70,7 @@ components:
         to:
           $ref: "#/components/schemas/Application"
         timestamp:
-          type: string
-          format: date-time
+          type: integer
+          format: int64
         errorDescription:
           type: string
