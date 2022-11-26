@@ -59,6 +59,7 @@ components:
         from:
           $ref: "#/components/schemas/Application"
         over:
+          description: "Метод передачи сообщения"
           type: string
         to:
           $ref: "#/components/schemas/Application"
