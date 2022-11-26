@@ -1,0 +1,1 @@
+rootProject.name = "com.zahar2.andr.kpo_callback_service"
