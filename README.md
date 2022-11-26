@@ -20,4 +20,25 @@
 После того как очередное приложение успешно выполнит запрос на сервер, websocket всем слушателям продублирует содержимое запроса в строке вида JSON содержащую Event (см. [openapi.yaml](/openapi.yaml#L47)).
 
 ## Запуск в Docker
-Доступно позже
+Убедитесь, что у вас установлен git и запущен Docker
+
+1. Импортируйте этот проект в любую удобную папку, например kpo_callback_service
+```
+git clone https://github.com/andrzahar/KPO_Callback_Service.git kpo_callback_service
+```
+2. Откройте эту папку
+```
+cd kpo_callback_service
+```
+3. Соберите (этот шаг долгий)
+```
+docker build -t kpo_callback_service .
+```
+4. Запустите
+```
+docker run -p 23052:23052 kpo_callback_service
+```
+Сервер будет доступен по следующему URL:
+```
+http://ip-адрес-вашего-компьютера:23052
+```
