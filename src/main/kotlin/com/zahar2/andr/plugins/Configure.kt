@@ -14,10 +14,27 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import io.ktor.util.pipeline.*
+
+suspend fun PipelineContext<*, ApplicationCall>.respond(status: HttpStatusCode, message: String, debug: Boolean) {
+    if (debug) {
+        call.respond(status, message)
+    } else {
+        call.respond(status)
+    }
+}
+
+fun logText(path: String, message: String?) = "$path: - $message"
+
+fun ApplicationCall.logInfo(path: String, message: String?) = application.log.info(logText(path, message))
+
+fun ApplicationCall.logWarn(path: String, message: String?) = application.log.warn(logText(path, message))
+
+fun ApplicationCall.logError(path: String, message: String?) = application.log.error(logText(path, message))
 
 fun <D> Routing.simpleWebSocket(path: String, connection: Connection<D>, closeForInput: Boolean = false) {
     webSocket(path) {
-        call.application.log.info("$path: Adding session!")
+        call.logInfo(path, "Adding session!")
         connection.addConnection(this)
         try {
             for (frame in incoming) {
@@ -26,9 +43,9 @@ fun <D> Routing.simpleWebSocket(path: String, connection: Connection<D>, closeFo
                 if (!closeForInput) connection.update(receivedText)
             }
         } catch (e: Exception) {
-            call.application.log.error("$path - ${e.cause}")
+            call.logError(path, e.cause?.localizedMessage)
         } finally {
-            call.application.log.warn("$path: Removing!")
+            call.logWarn(path, "Removing session!")
             connection.removingConnection(this)
         }
     }
@@ -40,15 +57,21 @@ inline fun <reified D : Any> Routing.simplePost(
     crossinline onSuccess: suspend (D) -> Unit
 ) {
     post(path) {
+        val debug = call.parameters["debug"].toBoolean()
         try {
             val stringData = call.receiveText()
             val data = stringData.toObject()
+
+            val message = "Post successful!\nData: $data"
             call.respond(HttpStatusCode.OK)
-            call.application.log.info("$path - Post successful!\nData: $data")
+            call.logInfo(path, message)
+
             onSuccess(data)
         } catch (e: Exception) {
-            call.application.log.error("$path - ${e.cause?: e.localizedMessage}")
-            call.respond(HttpStatusCode.BadRequest)
+            val message =
+                "Post error! Because: ${e.localizedMessage}. First of all, check that you receive correct JSON and timestamp in correct format (RFC3339)."
+            call.logError(path, message)
+            respond(HttpStatusCode.BadRequest, message, debug)
         }
     }
 }

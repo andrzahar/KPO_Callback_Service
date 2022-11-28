@@ -2,15 +2,22 @@ openapi: 3.0.3
 info:
   title: "Callback Service"
   description: "Серверное приложение для отслеживания маршрута сообщения"
-  version: "0.5"
-  
+  version: "1.0"
+
 paths:
 
   /callback:
-    
+
     post:
       summary: "Сообщение принято / отправлено"
       description: "Вызвать когда Ваше приложение получает сообщение из другого приложения или пользователь ввёл его. И Вызвать когда Ваше приложение отправляет сообщение в другое приложение или показывает пользователю"
+      parameters:
+        - name: debug
+          in: query
+          required: false
+          schema:
+            description: "Режим отладки. Если true, то ответ придёт с текстом ошибки"
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -18,20 +25,25 @@ paths:
               $ref: '#/components/schemas/Event'
       responses:
         200:
-          description: Successful operation
+          description: "Успешно"
         400:
-          description: Invalid status value
-  
+          description: "Не удалось распарсить Event."
+          content:
+            text/plain:
+              schema:
+                description: "Подробный текст ошибки (придёт, если debug == true)"
+                type: string
+
 components:
 
   schemas:
-  
+
     Action:
       type: string
       enum:
         - SEND
         - RECEIVE
-      
+
     Application:
       description: "О приложении: автор и язык, на котором написана программа"
       type: object
@@ -43,7 +55,7 @@ components:
           type: string
         language:
           type: string
-          
+
     Event:
       description: "Событие: получено / отправлено; от кого; используемый метод; кому; точное время события; а так же текст ошибки, если таковая произошла"
       type: object
@@ -64,9 +76,9 @@ components:
         to:
           $ref: "#/components/schemas/Application"
         timestamp:
-          description: "Время события"
+          description: "Точное время события"
           type: string
           format: date-time
         errorDescription:
-          description: "Текст ошибки (если произошла)"
+          description: "Текст ошибки, если произошла"
           type: string
