@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems.jar
+
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -6,7 +8,7 @@ plugins {
     application
     kotlin("jvm") version "1.7.21"
     id("io.ktor.plugin") version "2.1.3"
-                id("org.jetbrains.kotlin.plugin.serialization") version "1.7.21"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.7.21"
 }
 
 group = "com.zahar2.andr"
